@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5f7;font-family:Arial,sans-serif;color:#17212b}
+.header{background:#172938;color:#fff;padding:20px;font-size:24px;font-weight:bold}
+.container{padding:18px}.card{background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 3px 12px #0001}
+.title{font-size:22px;font-weight:bold;margin-bottom:15px}.submission{border:1px solid #e0e5e9;border-radius:14px;padding:16px;margin-top:12px}
+button{border:0;border-radius:10px;padding:11px 15px;color:#fff;font-weight:bold;margin:6px 4px 0 0}
+.approve{background:#198754}.reject{background:#dc3545}.refresh{background:#168de2}
+.status{display:inline-block;padding:6px 9px;border-radius:8px;background:#fff3cd;color:#856404;font-weight:bold}
+.error{color:#b02a37;background:#f8d7da;padding:12px;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="header">👨‍💼 Admin Panel</div>
+<div class="container">
+<div class="card">
+<div class="title">📊 Dashboard</div>
+<p>Pending Submissions: <b id="count">0</b></p>
+<button class="refresh" onclick="loadSubmissions()">🔄 Refresh</button>
+</div>
+<div class="card">
+<div class="title">📋 Submissions</div>
+<div id="list">লোড হচ্ছে...</div>
+</div>
+</div>
+<script>
+const SUPABASE_URL="https://cjfasocelwfvhhhghlma.supabase.co";
+const SUPABASE_KEY="sb_publishable_qYBMOJNal_V5ykKY6mcMzg_Oa-ASX7z";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+async function loadSubmissions(){
+ const list=document.getElementById("list");
+ list.innerHTML="লোড হচ্ছে...";
+ const {data,error}=await db.from("submissions").select("*").order("created_at",{ascending:false});
+ if(error){list.innerHTML='<div class="error">ডাটা লোড হয়নি। Supabase RLS policy ঠিক করতে হবে।<br><small>'+error.message+'</small></div>';return;}
+ const pending=data.filter(x=>x.status==="pending");
+ document.getElementById("count").innerText=pending.length;
+ if(!data.length){list.innerHTML="কোনো submission নেই।";return;}
+ list.innerHTML="";
+ data.forEach(x=>{
+  const d=document.createElement("div");d.className="submission";
+  d.innerHTML="<b>📝 Submission #"+x.id+"</b><p>👤 User: "+esc(x.telegram_id)+"</p><p>📋 Task ID: "+esc(x.task_id)+"</p><p>"+esc(x.submission)+"</p><span class='status'>"+esc(x.status)+"</span><br>";
+  if(x.status==="pending"){
+   const a=document.createElement("button");a.className="approve";a.innerText="✅ Approve";a.onclick=()=>updateStatus(x.id,"approved");
+   const r=document.createElement("button");r.className="reject";r.innerText="❌ Reject";r.onclick=()=>updateStatus(x.id,"rejected");
+   d.append(a,r);
+  }
+  list.appendChild(d);
+ });
+}
+async function updateStatus(id,status){
+ const {error}=await db.from("submissions").update({status}).eq("id",id);
+ if(error){alert("Update হয়নি: "+error.message);return;}
+ await loadSubmissions();
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+loadSubmissions();
+</script>
+</body>
+</html>
