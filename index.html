@@ -1,1 +1,170 @@
-<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Email Service</title><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#17202a}.app{max-width:480px;margin:auto;min-height:100vh;padding:18px 14px 30px}.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 3px 14px #0001}.muted{color:#74808b;font-size:14px}.balance{font-size:30px;font-weight:700;margin-top:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{width:100%;border:0;border-radius:14px;padding:16px;font-size:16px;font-weight:600;background:#e9f2ff;color:#1769aa;cursor:pointer}button.primary{background:#1683e8;color:white}.full{grid-column:1/-1}#msg{margin-top:12px;color:#555;font-size:14px;text-align:center}</style></head><body><div class="app"><div class="card"><div class="muted">👋 Welcome</div><h2 id="name">User</h2><div class="muted">আপনার বর্তমান ব্যালেন্স</div><div class="balance">৳ <span id="balance">0.00</span></div></div><div class="grid"><button class="primary" onclick="show('📧 Email Service')">📧 Email Service</button><button onclick="show('💸 Withdraw')">💸 Withdraw</button><button onclick="show('💰 My Balance')">💰 My Balance</button><button onclick="show('📜 History')">📜 History</button><button onclick="show('🎁 Referral')">🎁 Referral</button><button onclick="show('☎️ Help')">☎️ Help</button></div><div id="msg"></div></div><script>const tg=window.Telegram?.WebApp;if(tg){tg.ready();tg.expand()}if(tg?.initDataUnsafe?.user)document.getElementById('name').textContent=tg.initDataUnsafe.user.first_name||'User';function show(t){document.getElementById('msg').textContent=t+' — এই ফিচারটি পরের ধাপে যুক্ত করা হবে।'}</script></body></html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Make Money - Email Service</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f4f6f8;
+    font-family: Arial, sans-serif;
+    color: #17212b;
+}
+
+.header {
+    background: #172938;
+    color: white;
+    padding: 18px 20px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+}
+
+h2 {
+    margin: 0 0 8px;
+}
+
+p {
+    color: #68747d;
+    line-height: 1.5;
+}
+
+.task {
+    border: 1px solid #e1e7eb;
+    border-radius: 15px;
+    padding: 17px;
+    margin: 12px 0;
+}
+
+.task-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.reward {
+    font-weight: bold;
+    color: #0088cc;
+    margin: 8px 0;
+}
+
+button {
+    border: none;
+    border-radius: 13px;
+    padding: 13px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    background: #168de2;
+    color: white;
+    width: 100%;
+}
+
+button:active {
+    opacity: 0.8;
+}
+
+.note {
+    font-size: 13px;
+    color: #7b858c;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    📧 Email Service
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>📋 Available Tasks</h2>
+
+        <p>
+            বৈধ ইমেইল-সংক্রান্ত কাজ সম্পন্ন করে
+            রিওয়ার্ড অর্জন করুন।
+        </p>
+
+        <div class="task">
+
+            <div class="task-title">
+                📩 Email Verification Task
+            </div>
+
+            <div class="reward">
+                💰 Reward: ৳ 2.00
+            </div>
+
+            <p>
+                আপনার নিজের ইমেইল ব্যবহার করে প্রদত্ত
+                বৈধ verification link পরীক্ষা করুন।
+            </p>
+
+            <button onclick="startTask('Email Verification Task')">
+                Start Task
+            </button>
+
+        </div>
+
+        <div class="task">
+
+            <div class="task-title">
+                📝 Email Feedback Task
+            </div>
+
+            <div class="reward">
+                💰 Reward: ৳ 5.00
+            </div>
+
+            <p>
+                প্রদত্ত সেবার জন্য সংক্ষিপ্ত ও
+                সত্যনিষ্ঠ feedback জমা দিন।
+            </p>
+
+            <button onclick="startTask('Email Feedback Task')">
+                Start Task
+            </button>
+
+        </div>
+
+        <p class="note">
+            ⚠️ Gmail/Email account তৈরি, কেনাবেচা বা
+            অন্যের account ব্যবহার করার কাজ এখানে রাখা হয় না।
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>💰 Your Balance</h2>
+
+        <p style="font-size:30px;font-weight:bold;color:#17212b;">
+            ৳ 0.00
+        </p>
+
+        <button onclick="tg.close()">
+            🏠 Back to Home
+        </button>
+
+    </div>
