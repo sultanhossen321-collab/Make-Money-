@@ -3,125 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Admin Panel</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
- margin:0;
- background:#f3f5f7;
- font-family:Arial,sans-serif;
- color:#17212b;
+  margin:0;
+  background:#f3f5f7;
+  font-family:Arial,sans-serif;
+  color:#17212b;
 }
 
 .header{
- background:#172938;
- color:#fff;
- padding:18px;
- font-size:23px;
- font-weight:bold;
+  background:#172938;
+  color:white;
+  padding:18px;
+  font-size:23px;
+  font-weight:bold;
 }
 
 .container{
- max-width:900px;
- margin:auto;
- padding:18px;
+  max-width:900px;
+  margin:auto;
+  padding:18px;
 }
 
 .card{
- background:#fff;
- border-radius:18px;
- padding:20px;
- margin-bottom:18px;
- box-shadow:0 3px 12px #0001;
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 3px 12px #0001;
 }
 
 .title{
- font-size:21px;
- font-weight:bold;
- margin-bottom:15px;
+  font-size:21px;
+  font-weight:bold;
+  margin-bottom:15px;
 }
 
 input{
- width:100%;
- padding:13px;
- border:1px solid #ccd3d9;
- border-radius:10px;
- margin:7px 0;
- font-size:15px;
+  width:100%;
+  padding:13px;
+  border:1px solid #ccd3d9;
+  border-radius:10px;
+  margin:7px 0;
+  font-size:15px;
 }
 
 button{
- border:0;
- border-radius:10px;
- padding:11px 15px;
- color:#fff;
- font-weight:bold;
- margin:6px 4px 0 0;
- cursor:pointer;
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  color:white;
+  font-weight:bold;
+  margin:6px 4px 0 0;
+  cursor:pointer;
 }
 
-.login{background:#172938;width:100%}
-.approve{background:#198754}
-.reject{background:#dc3545}
-.refresh{background:#168de2}
-.balance{background:#6f42c1}
-.logout{background:#6c757d}
+.login{
+  background:#172938;
+  width:100%;
+}
+
+.approve{
+  background:#198754;
+}
+
+.reject{
+  background:#dc3545;
+}
+
+.refresh{
+  background:#168de2;
+}
+
+.balance{
+  background:#6f42c1;
+}
+
+.logout{
+  background:#6c757d;
+}
 
 .submission{
- border:1px solid #e0e5e9;
- border-radius:14px;
- padding:16px;
- margin-top:12px;
+  border:1px solid #e0e5e9;
+  border-radius:14px;
+  padding:16px;
+  margin-top:12px;
 }
 
 .status{
- display:inline-block;
- padding:6px 9px;
- border-radius:8px;
- background:#fff3cd;
- color:#856404;
- font-weight:bold;
+  display:inline-block;
+  padding:6px 9px;
+  border-radius:8px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.pending{
+  background:#fff3cd;
+  color:#856404;
+}
+
+.approved{
+  background:#d1e7dd;
+  color:#0f5132;
+}
+
+.rejected{
+  background:#f8d7da;
+  color:#842029;
 }
 
 .error{
- color:#842029;
- background:#f8d7da;
- padding:12px;
- border-radius:10px;
+  color:#842029;
+  background:#f8d7da;
+  padding:12px;
+  border-radius:10px;
+  margin-top:10px;
 }
 
 .success{
- color:#0f5132;
- background:#d1e7dd;
- padding:12px;
- border-radius:10px;
+  color:#0f5132;
+  background:#d1e7dd;
+  padding:12px;
+  border-radius:10px;
+  margin-top:10px;
 }
 
 .hidden{
- display:none;
+  display:none;
 }
 
 .balance-box{
- background:#f7f2ff;
- border:1px solid #dfd0ff;
- padding:15px;
- border-radius:12px;
- margin-top:12px;
-}
-
-.user-info{
- padding:12px;
- background:#f5f5f5;
- border-radius:10px;
- margin-top:10px;
-}
-
-small{
- color:#666;
+  background:#f7f2ff;
+  border:1px solid #dfd0ff;
+  padding:15px;
+  border-radius:12px;
+  margin-top:12px;
 }
 </style>
 </head>
@@ -129,97 +155,123 @@ small{
 <body>
 
 <div class="header">
- 👨‍💼 Admin Panel
+👨‍💼 Admin Panel
 </div>
 
 <div class="container">
 
-<!-- LOGIN -->
+<!-- ================= LOGIN ================= -->
+
 <div id="loginCard" class="card">
 
-<div class="title">🔐 Admin Login</div>
+  <div class="title">
+    🔐 Admin Login
+  </div>
 
-<input
- id="email"
- type="email"
- placeholder="Admin Email"
->
+  <input
+    id="email"
+    type="email"
+    placeholder="Admin Email"
+  >
 
-<input
- id="password"
- type="password"
- placeholder="Password"
->
+  <input
+    id="password"
+    type="password"
+    placeholder="Password"
+  >
 
-<button class="login" onclick="login()">
- 🔐 Login
-</button>
+  <button
+    class="login"
+    onclick="login()"
+  >
+    🔐 Login
+  </button>
 
-<div id="loginMsg"></div>
+  <div id="loginMsg"></div>
 
 </div>
 
 
-<!-- ADMIN AREA -->
+<!-- ================= ADMIN AREA ================= -->
+
 <div id="adminArea" class="hidden">
 
-<div class="card">
+  <!-- Dashboard -->
 
-<div class="title">📊 Dashboard</div>
+  <div class="card">
 
-<p>
-Pending Submissions:
-<b id="count">0</b>
-</p>
+    <div class="title">
+      📊 Dashboard
+    </div>
 
-<button class="refresh" onclick="loadSubmissions()">
- 🔄 Refresh
-</button>
+    <p>
+      Pending Submissions:
+      <b id="count">0</b>
+    </p>
 
-<button class="logout" onclick="logout()">
- 🚪 Logout
-</button>
+    <button
+      class="refresh"
+      onclick="loadSubmissions()"
+    >
+      🔄 Refresh
+    </button>
 
-</div>
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      🚪 Logout
+    </button>
 
-
-<!-- BALANCE -->
-<div class="card">
-
-<div class="title">💰 Add User Balance</div>
-
-<input
- id="telegramId"
- type="text"
- placeholder="Telegram ID"
->
-
-<input
- id="amount"
- type="number"
- step="0.01"
- placeholder="Balance Amount"
->
-
-<button class="balance" onclick="addBalance()">
- 💰 Add Balance
-</button>
-
-<div id="balanceMsg"></div>
-
-</div>
+  </div>
 
 
-<!-- SUBMISSIONS -->
-<div class="card">
+  <!-- Balance -->
 
-<div class="title">📋 Submissions</div>
+  <div class="card">
 
-<div id="list">
-লোড হচ্ছে...
-</div>
+    <div class="title">
+      💰 Manual Balance Add
+    </div>
 
-</div>
+    <input
+      id="telegramId"
+      type="text"
+      placeholder="Telegram ID"
+    >
+
+    <input
+      id="amount"
+      type="number"
+      step="0.01"
+      placeholder="Amount"
+    >
+
+    <button
+      class="balance"
+      onclick="addBalance()"
+    >
+      💰 Add Balance
+    </button>
+
+    <div id="balanceMsg"></div>
+
+  </div>
+
+
+  <!-- Submissions -->
+
+  <div class="card">
+
+    <div class="title">
+      📋 Submissions
+    </div>
+
+    <div id="list">
+      লোড হচ্ছে...
+    </div>
+
+  </div>
 
 </div>
 
@@ -229,7 +281,7 @@ Pending Submissions:
 <script>
 
 /* =====================================================
-   SUPABASE CONFIG
+   SUPABASE
 ===================================================== */
 
 const SUPABASE_URL =
@@ -240,28 +292,18 @@ const SUPABASE_KEY =
 
 const db =
 supabase.createClient(
- SUPABASE_URL,
- SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 
 /* =====================================================
-   DATABASE CONFIG
-=====================================================
-
-   Balance-এর জন্য ধরে নেওয়া হয়েছে:
-
-   Table: users
-
-   Columns:
-   telegram_id
-   balance
-
+   SETTINGS
 ===================================================== */
 
 const USERS_TABLE = "users";
-const TELEGRAM_COLUMN = "telegram_id";
-const BALANCE_COLUMN = "balance";
+
+const REWARD_AMOUNT = 10;
 
 
 /* =====================================================
@@ -270,64 +312,55 @@ const BALANCE_COLUMN = "balance";
 
 async function login(){
 
- const email =
- document.getElementById("email").value.trim();
+  const email =
+    document.getElementById("email")
+    .value.trim();
 
- const password =
- document.getElementById("password").value;
+  const password =
+    document.getElementById("password")
+    .value;
 
- const msg =
- document.getElementById("loginMsg");
-
- if(!email || !password){
-
-   msg.innerHTML =
-   '<div class="error">Email ও Password দিন।</div>';
-
-   return;
- }
-
- msg.innerHTML = "Login হচ্ছে...";
-
- const {data,error} =
- await db.auth.signInWithPassword({
-   email:email,
-   password:password
- });
-
- if(error){
-
-   msg.innerHTML =
-   '<div class="error">Login ব্যর্থ: '+
-   esc(error.message)+
-   '</div>';
-
-   return;
- }
-
- msg.innerHTML = "";
-
- showAdmin();
-
-}
+  const msg =
+    document.getElementById("loginMsg");
 
 
-/* =====================================================
-   LOGOUT
-===================================================== */
+  if(!email || !password){
 
-async function logout(){
+    msg.innerHTML =
+      '<div class="error">'+
+      'Email এবং Password দিন।'+
+      '</div>';
 
- await db.auth.signOut();
+    return;
+  }
 
- document
- .getElementById("adminArea")
- .classList.add("hidden");
 
- document
- .getElementById("loginCard")
- .classList.remove("hidden");
+  msg.innerHTML =
+    "🔄 Login হচ্ছে...";
 
+
+  const {error} =
+    await db.auth.signInWithPassword({
+      email:email,
+      password:password
+    });
+
+
+  if(error){
+
+    msg.innerHTML =
+      '<div class="error">'+
+      'Login ব্যর্থ:<br>'+
+      esc(error.message)+
+      '</div>';
+
+    return;
+  }
+
+
+  msg.innerHTML = "";
+
+  showAdmin();
 }
 
 
@@ -337,14 +370,15 @@ async function logout(){
 
 async function checkLogin(){
 
- const {data} =
- await db.auth.getSession();
+  const {data} =
+    await db.auth.getSession();
 
- if(data.session){
 
-   showAdmin();
+  if(data.session){
 
- }
+    showAdmin();
+
+  }
 
 }
 
@@ -355,15 +389,38 @@ async function checkLogin(){
 
 function showAdmin(){
 
- document
- .getElementById("loginCard")
- .classList.add("hidden");
+  document
+    .getElementById("loginCard")
+    .classList.add("hidden");
 
- document
- .getElementById("adminArea")
- .classList.remove("hidden");
 
- loadSubmissions();
+  document
+    .getElementById("adminArea")
+    .classList.remove("hidden");
+
+
+  loadSubmissions();
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+  await db.auth.signOut();
+
+
+  document
+    .getElementById("adminArea")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("loginCard")
+    .classList.remove("hidden");
 
 }
 
@@ -374,358 +431,461 @@ function showAdmin(){
 
 async function loadSubmissions(){
 
- const list =
- document.getElementById("list");
-
- list.innerHTML =
- "লোড হচ্ছে...";
+  const list =
+    document.getElementById("list");
 
 
- const {data,error} =
- await db
- .from("submissions")
- .select("*")
- .order("created_at",{ascending:false});
+  list.innerHTML =
+    "🔄 লোড হচ্ছে...";
 
 
- if(error){
-
-   list.innerHTML =
-   '<div class="error">'+
-   'ডাটা লোড হয়নি।<br><small>'+
-   esc(error.message)+
-   '</small></div>';
-
-   return;
- }
-
-
- const pending =
- data.filter(
-   x => x.status === "pending"
- );
+  const {data,error} =
+    await db
+      .from("submissions")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
 
 
- document.getElementById("count")
- .innerText = pending.length;
+  if(error){
+
+    list.innerHTML =
+      '<div class="error">'+
+      'Submission লোড হয়নি।<br><br>'+
+      esc(error.message)+
+      '</div>';
+
+    return;
+  }
 
 
- if(!data.length){
-
-   list.innerHTML =
-   "কোনো submission নেই।";
-
-   return;
-
- }
+  const pending =
+    data.filter(
+      x => x.status === "pending"
+    );
 
 
- list.innerHTML = "";
+  document
+    .getElementById("count")
+    .innerText =
+      pending.length;
 
 
- data.forEach(x=>{
+  if(!data.length){
 
-   const d =
-   document.createElement("div");
+    list.innerHTML =
+      "কোনো submission নেই।";
 
-   d.className =
-   "submission";
-
-
-   d.innerHTML =
-
-   "<b>📝 Submission #"+
-   esc(x.id)+
-   "</b>"+
-
-   "<p>👤 User: "+
-   esc(x.telegram_id)+
-   "</p>"+
-
-   "<p>📋 Task ID: "+
-   esc(x.task_id)+
-   "</p>"+
-
-   "<p>"+
-   esc(x.submission)+
-   "</p>"+
-
-   "<span class='status'>"+
-   esc(x.status)+
-   "</span><br>";
+    return;
+  }
 
 
-   if(x.status === "pending"){
-
-     const a =
-     document.createElement("button");
-
-     a.className =
-     "approve";
-
-     a.innerText =
-     "✅ Approve";
-
-     a.onclick =
-     () =>
-     updateStatus(
-       x.id,
-       "approved"
-     );
+  list.innerHTML = "";
 
 
-     const r =
-     document.createElement("button");
+  data.forEach(x => {
 
-     r.className =
-     "reject";
+    const box =
+      document.createElement("div");
 
-     r.innerText =
-     "❌ Reject";
-
-     r.onclick =
-     () =>
-     updateStatus(
-       x.id,
-       "rejected"
-     );
+    box.className =
+      "submission";
 
 
-     d.appendChild(a);
-     d.appendChild(r);
-
-   }
+    let statusClass =
+      "pending";
 
 
-   list.appendChild(d);
+    if(x.status === "approved"){
+      statusClass = "approved";
+    }
 
- });
+    if(x.status === "rejected"){
+      statusClass = "rejected";
+    }
+
+
+    box.innerHTML =
+
+      "<b>📝 Submission #"+
+      esc(x.id)+
+      "</b>"+
+
+      "<p>👤 Telegram ID: "+
+      esc(x.telegram_id)+
+      "</p>"+
+
+      "<p>📋 Task ID: "+
+      esc(x.task_id)+
+      "</p>"+
+
+      "<p>📝 Submission:<br>"+
+      esc(x.submission)+
+      "</p>"+
+
+      "<span class='status "+
+      statusClass+
+      "'>"+
+      esc(x.status)+
+      "</span>";
+
+
+    /* =============================
+       PENDING BUTTONS
+    ============================= */
+
+    if(x.status === "pending"){
+
+      const approve =
+        document.createElement("button");
+
+
+      approve.className =
+        "approve";
+
+
+      approve.innerText =
+        "✅ Approve + ৳10";
+
+
+      approve.onclick =
+        () =>
+          approveSubmission(x.id);
+
+
+      const reject =
+        document.createElement("button");
+
+
+      reject.className =
+        "reject";
+
+
+      reject.innerText =
+        "❌ Reject";
+
+
+      reject.onclick =
+        () =>
+          rejectSubmission(x.id);
+
+
+      box.appendChild(
+        document.createElement("br")
+      );
+
+
+      box.appendChild(approve);
+
+      box.appendChild(reject);
+
+    }
+
+
+    list.appendChild(box);
+
+  });
 
 }
 
 
 /* =====================================================
-   APPROVE / REJECT
+   APPROVE
+   DATABASE FUNCTION ব্যবহার করা হচ্ছে
 ===================================================== */
 
-async function updateStatus(id,status){
+async function approveSubmission(id){
 
- const ok =
- confirm(
-   status === "approved"
-   ? "এই submission Approve করবেন?"
-   : "এই submission Reject করবেন?"
- );
-
- if(!ok) return;
+  const ok =
+    confirm(
+      "এই submission Approve করলে User-এর Balance-এ ৳10 যোগ হবে।\n\nApprove করবেন?"
+    );
 
 
- const {error} =
- await db
- .from("submissions")
- .update({
-   status:status
- })
- .eq("id",id);
+  if(!ok){
+    return;
+  }
 
 
- if(error){
-
-   alert(
-     "Update হয়নি:\n"+
-     error.message
-   );
-
-   return;
- }
+  const {data,error} =
+    await db.rpc(
+      "approve_submission",
+      {
+        p_submission_id:id
+      }
+    );
 
 
- alert(
-   status === "approved"
-   ? "✅ Approved হয়েছে"
-   : "❌ Rejected হয়েছে"
- );
+  if(error){
+
+    alert(
+      "❌ Approve হয়নি:\n\n"+
+      error.message
+    );
+
+    return;
+  }
 
 
- await loadSubmissions();
+  if(data && data.already_processed){
+
+    alert(
+      "⚠️ Reward আগে দেওয়া হয়েছে।\n\n"+
+      data.message
+    );
+
+    await loadSubmissions();
+
+    return;
+  }
+
+
+  if(data && data.success){
+
+    alert(
+      "✅ Submission Approved!\n\n"+
+      "Reward: ৳"+
+      data.reward+
+      "\n"+
+      "নতুন Balance: ৳"+
+      data.new_balance
+    );
+
+    await loadSubmissions();
+
+    return;
+  }
+
+
+  alert(
+    "⚠️ কোনো পরিবর্তন হয়নি।"
+  );
 
 }
 
 
 /* =====================================================
-   ADD BALANCE
+   REJECT
+===================================================== */
+
+async function rejectSubmission(id){
+
+  const ok =
+    confirm(
+      "এই submission Reject করবেন?\n\n"+
+      "Reject করলে কোনো Balance যোগ হবে না।"
+    );
+
+
+  if(!ok){
+    return;
+  }
+
+
+  const {error} =
+    await db
+      .from("submissions")
+      .update({
+        status:"rejected"
+      })
+      .eq("id",id)
+      .eq("status","pending");
+
+
+  if(error){
+
+    alert(
+      "❌ Reject হয়নি:\n\n"+
+      error.message
+    );
+
+    return;
+  }
+
+
+  alert(
+    "❌ Submission Rejected.\n"+
+    "কোনো Balance যোগ হয়নি।"
+  );
+
+
+  await loadSubmissions();
+
+}
+
+
+/* =====================================================
+   MANUAL BALANCE
 ===================================================== */
 
 async function addBalance(){
 
- const telegramId =
- document
- .getElementById("telegramId")
- .value
- .trim();
-
- const amount =
- parseFloat(
-   document
-   .getElementById("amount")
-   .value
- );
+  const telegramId =
+    document
+      .getElementById("telegramId")
+      .value
+      .trim();
 
 
- const msg =
- document.getElementById("balanceMsg");
+  const amount =
+    parseFloat(
+      document
+        .getElementById("amount")
+        .value
+    );
 
 
- if(!telegramId){
-
-   msg.innerHTML =
-   '<div class="error">'+
-   'Telegram ID দিন।'+
-   '</div>';
-
-   return;
-
- }
+  const msg =
+    document
+      .getElementById("balanceMsg");
 
 
- if(!amount || amount <= 0){
+  if(!telegramId){
 
-   msg.innerHTML =
-   '<div class="error">'+
-   'সঠিক Balance Amount দিন।'+
-   '</div>';
+    msg.innerHTML =
+      '<div class="error">'+
+      'Telegram ID দিন।'+
+      '</div>';
 
-   return;
-
- }
-
-
- msg.innerHTML =
- "User খোঁজা হচ্ছে...";
+    return;
+  }
 
 
- /* USER SEARCH */
+  if(!amount || amount <= 0){
 
- const {data:user,error:findError} =
- await db
- .from(USERS_TABLE)
- .select("*")
- .eq(
-   TELEGRAM_COLUMN,
-   telegramId
- )
- .maybeSingle();
+    msg.innerHTML =
+      '<div class="error">'+
+      'সঠিক Amount দিন।'+
+      '</div>';
+
+    return;
+  }
 
 
- if(findError){
-
-   msg.innerHTML =
-   '<div class="error">'+
-   'User খুঁজতে সমস্যা হয়েছে:<br>'+
-   esc(findError.message)+
-   '</div>';
-
-   return;
-
- }
+  msg.innerHTML =
+    "🔄 User খোঁজা হচ্ছে...";
 
 
- if(!user){
-
-   msg.innerHTML =
-   '<div class="error">'+
-   'এই Telegram ID-এর User পাওয়া যায়নি।'+
-   '</div>';
-
-   return;
-
- }
-
-
- const oldBalance =
- Number(
-   user[BALANCE_COLUMN] || 0
- );
+  const {
+    data:user,
+    error:findError
+  } =
+    await db
+      .from(USERS_TABLE)
+      .select("*")
+      .eq(
+        "telegram_id",
+        telegramId
+      )
+      .maybeSingle();
 
 
- const newBalance =
- oldBalance + amount;
+  if(findError){
+
+    msg.innerHTML =
+      '<div class="error">'+
+      esc(findError.message)+
+      '</div>';
+
+    return;
+  }
 
 
- /* UPDATE BALANCE */
+  if(!user){
 
- const updateData = {};
+    msg.innerHTML =
+      '<div class="error">'+
+      'এই Telegram ID-এর User পাওয়া যায়নি।'+
+      '</div>';
 
- updateData[BALANCE_COLUMN] =
- newBalance;
-
-
- const {error:updateError} =
- await db
- .from(USERS_TABLE)
- .update(updateData)
- .eq(
-   TELEGRAM_COLUMN,
-   telegramId
- );
+    return;
+  }
 
 
- if(updateError){
-
-   msg.innerHTML =
-   '<div class="error">'+
-   'Balance update হয়নি:<br>'+
-   esc(updateError.message)+
-   '</div>';
-
-   return;
-
- }
+  const oldBalance =
+    Number(
+      user.balance || 0
+    );
 
 
- msg.innerHTML =
- '<div class="success">'+
- '✅ Balance সফলভাবে যোগ হয়েছে।'+
- '<br><br>'+
- '👤 Telegram ID: '+
- esc(telegramId)+
- '<br>'+
- '💰 আগের Balance: '+
- oldBalance+
- '<br>'+
- '➕ যোগ হয়েছে: '+
- amount+
- '<br>'+
- '💵 নতুন Balance: '+
- newBalance+
- '</div>';
+  const newBalance =
+    oldBalance + amount;
 
 
- document
- .getElementById("amount")
- .value = "";
+  const {error:updateError} =
+    await db
+      .from(USERS_TABLE)
+      .update({
+        balance:newBalance
+      })
+      .eq(
+        "telegram_id",
+        telegramId
+      );
+
+
+  if(updateError){
+
+    msg.innerHTML =
+      '<div class="error">'+
+      'Balance update হয়নি:<br>'+
+      esc(updateError.message)+
+      '</div>';
+
+    return;
+  }
+
+
+  msg.innerHTML =
+    '<div class="success">'+
+    '✅ Balance সফলভাবে যোগ হয়েছে।'+
+    '<br><br>'+
+    '👤 Telegram ID: '+
+    esc(telegramId)+
+    '<br>'+
+    '💰 আগের Balance: ৳'+
+    oldBalance+
+    '<br>'+
+    '➕ যোগ হয়েছে: ৳'+
+    amount+
+    '<br>'+
+    '💵 নতুন Balance: ৳'+
+    newBalance+
+    '</div>';
+
+
+  document
+    .getElementById("amount")
+    .value = "";
 
 }
 
 
 /* =====================================================
-   ESCAPE HTML
+   SECURITY: HTML ESCAPE
 ===================================================== */
 
-function esc(v){
+function esc(value){
 
- return String(v ?? "")
- .replace(
-   /[&<>"']/g,
-   m =>
-   ({
-     "&":"&amp;",
-     "<":"&lt;",
-     ">":"&gt;",
-     '"':"&quot;",
-     "'":"&#039;"
-   }[m])
- );
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      function(m){
+
+        return {
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          '"':"&quot;",
+          "'":"&#039;"
+        }[m];
+
+      }
+    );
 
 }
 
