@@ -4,167 +4,420 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make Money - Email Service</title>
+<title>Email Service</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-* {
-    box-sizing: border-box;
+
+*{
+    box-sizing:border-box;
 }
 
-body {
-    margin: 0;
-    background: #f4f6f8;
-    font-family: Arial, sans-serif;
-    color: #17212b;
+body{
+    margin:0;
+    background:#f3f5f7;
+    font-family:Arial,sans-serif;
+    color:#17212b;
 }
 
-.header {
-    background: #172938;
-    color: white;
-    padding: 18px 20px;
-    font-size: 23px;
-    font-weight: bold;
+.header{
+    background:#172938;
+    color:white;
+    padding:20px;
+    font-size:24px;
+    font-weight:bold;
 }
 
-.container {
-    padding: 20px;
+.container{
+    padding:18px;
 }
 
-.card {
-    background: white;
-    border-radius: 20px;
-    padding: 22px;
-    margin-bottom: 18px;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+.card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:18px;
+    box-shadow:0 3px 12px rgba(0,0,0,0.08);
 }
 
-h2 {
-    margin: 0 0 8px;
+.title{
+    font-size:23px;
+    font-weight:bold;
+    margin-bottom:8px;
 }
 
-p {
-    color: #68747d;
-    line-height: 1.5;
+.description{
+    color:#68747d;
+    line-height:1.5;
 }
 
-.task {
-    border: 1px solid #e1e7eb;
-    border-radius: 15px;
-    padding: 17px;
-    margin: 12px 0;
+.task{
+    border:1px solid #e0e5e9;
+    border-radius:15px;
+    padding:17px;
+    margin-top:14px;
 }
 
-.task-title {
-    font-size: 18px;
-    font-weight: bold;
+.task-title{
+    font-size:18px;
+    font-weight:bold;
 }
 
-.reward {
-    font-weight: bold;
-    color: #0088cc;
-    margin: 8px 0;
+.reward{
+    color:#0088cc;
+    font-weight:bold;
+    margin:8px 0;
 }
 
-button {
-    border: none;
-    border-radius: 13px;
-    padding: 13px 18px;
-    font-size: 16px;
-    font-weight: bold;
-    background: #168de2;
-    color: white;
-    width: 100%;
+.task-text{
+    color:#68747d;
+    line-height:1.5;
 }
 
-button:active {
-    opacity: 0.8;
+button{
+    width:100%;
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    margin-top:10px;
+    background:#168de2;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
 }
 
-.note {
-    font-size: 13px;
-    color: #7b858c;
+button:active{
+    opacity:.8;
 }
+
+.back{
+    background:#172938;
+}
+
+textarea{
+    width:100%;
+    min-height:130px;
+    padding:13px;
+    border:1px solid #d9dfe3;
+    border-radius:12px;
+    resize:none;
+    font-size:15px;
+    margin-top:12px;
+}
+
+.hidden{
+    display:none;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#856404;
+    padding:12px;
+    border-radius:10px;
+    margin-top:12px;
+    font-weight:bold;
+}
+
+.success{
+    background:#d4edda;
+    color:#155724;
+    padding:12px;
+    border-radius:10px;
+    margin-top:12px;
+    font-weight:bold;
+}
+
+.balance{
+    font-size:30px;
+    font-weight:bold;
+}
+
+.note{
+    font-size:13px;
+    color:#7b858c;
+    margin-top:15px;
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div class="header">
-    📧 Email Service
+📧 Email Service
 </div>
 
 <div class="container">
 
-    <div class="card">
+<!-- TASK PAGE -->
 
-        <h2>📋 Available Tasks</h2>
+<div id="taskPage">
 
-        <p>
-            বৈধ ইমেইল-সংক্রান্ত কাজ সম্পন্ন করে
-            রিওয়ার্ড অর্জন করুন।
-        </p>
+<div class="card">
 
-        <div class="task">
+<div class="title">
+📋 Available Tasks
+</div>
 
-            <div class="task-title">
-                📩 Email Verification Task
-            </div>
+<div class="description">
+বৈধ ইমেইল-সংক্রান্ত কাজ সম্পন্ন করে রিওয়ার্ড অর্জন করুন।
+</div>
 
-            <div class="reward">
-                💰 Reward: ৳ 2.00
-            </div>
 
-            <p>
-                আপনার নিজের ইমেইল ব্যবহার করে প্রদত্ত
-                বৈধ verification link পরীক্ষা করুন।
-            </p>
+<!-- TASK 1 -->
 
-            <button onclick="startTask('Email Verification Task')">
-                Start Task
-            </button>
+<div class="task">
 
-        </div>
+<div class="task-title">
+📩 Email Verification Task
+</div>
 
-        <div class="task">
+<div class="reward">
+💰 Reward: ৳2.00
+</div>
 
-            <div class="task-title">
-                📝 Email Feedback Task
-            </div>
+<div class="task-text">
+আপনার নিজের ইমেইল ব্যবহার করে প্রদত্ত বৈধ verification task সম্পন্ন করুন।
+</div>
 
-            <div class="reward">
-                💰 Reward: ৳ ১০.00
-            </div>
+<button onclick="openTask(1)">
+▶️ Start Task
+</button>
 
-            <p>
-                প্রদত্ত সেবার জন্য সংক্ষিপ্ত ও
-                সত্যনিষ্ঠ feedback জমা দিন।
-            </p>
+</div>
 
-            <button onclick="startTask('Email Feedback Task')">
-                Start Task
-            </button>
 
-        </div>
+<!-- TASK 2 -->
 
-        <p class="note">
-            ⚠️ 
-            অন্যের account বা ব্যবহার করা অ্যাকাউন্ট এর কাজ এখানে রাখা হয় না।
-        </p>
+<div class="task">
 
-    </div>
+<div class="task-title">
+📝 Email Feedback Task
+</div>
 
-    <div class="card">
+<div class="reward">
+💰 Reward: ৳10.00
+</div>
 
-        <h2>💰 Your Balance</h2>
+<div class="task-text">
+প্রদত্ত সেবার জন্য সংক্ষিপ্ত ও সত্যনিষ্ঠ feedback লিখুন।
+</div>
 
-        <p style="font-size:30px;font-weight:bold;color:#17212b;">
-            ৳ 0.00
-        </p>
+<button onclick="openTask(2)">
+▶️ Start Task
+</button>
 
-        <button onclick="tg.close()">
-            🏠 Back to Home
-        </button>
+</div>
 
-    </div>
+<div class="note">
+⚠️ অন্যের account বা ব্যবহার করা account এর কাজ এখানে রাখা হয় না।
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+💰 Your Balance
+</div>
+
+<div class="balance">
+৳ <span id="balance">0.00</span>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- SUBMIT PAGE -->
+
+<div id="submitPage" class="hidden">
+
+<div class="card">
+
+<div class="title" id="selectedTask">
+📝 Task Submission
+</div>
+
+<p>
+নিচের বক্সে আপনার কাজের ফলাফল/প্রমাণ লিখুন।
+</p>
+
+<textarea
+id="submission"
+placeholder="এখানে আপনার submission লিখুন..."
+></textarea>
+
+<button onclick="submitTask()">
+📤 Submit Task
+</button>
+
+<button class="back" onclick="backToTasks()">
+⬅️ Back
+</button>
+
+<div id="message"></div>
+
+</div>
+
+</div>
+
+
+<!-- HISTORY -->
+
+<div class="card">
+
+<div class="title">
+📜 History
+</div>
+
+<div id="history">
+কোনো task এখনো submit করা হয়নি।
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const tg = window.Telegram.WebApp;
+
+tg.ready();
+tg.expand();
+
+let selectedTask = "";
+let selectedReward = 0;
+
+let historyList = [];
+
+
+function openTask(task){
+
+    if(task === 1){
+
+        selectedTask = "📩 Email Verification Task";
+        selectedReward = 2;
+
+    }
+
+    if(task === 2){
+
+        selectedTask = "📝 Email Feedback Task";
+        selectedReward = 10;
+
+    }
+
+    document.getElementById("taskPage").classList.add("hidden");
+
+    document.getElementById("submitPage").classList.remove("hidden");
+
+    document.getElementById("selectedTask").innerText =
+        selectedTask;
+
+    document.getElementById("submission").value = "";
+
+    document.getElementById("message").innerHTML = "";
+
+}
+
+
+function submitTask(){
+
+    const submission =
+        document.getElementById("submission").value.trim();
+
+    if(submission === ""){
+
+        tg.showAlert("দয়া করে আপনার submission লিখুন।");
+
+        return;
+
+    }
+
+
+    const item = {
+
+        task:selectedTask,
+
+        reward:selectedReward,
+
+        status:"Pending"
+
+    };
+
+
+    historyList.push(item);
+
+    document.getElementById("message").innerHTML =
+        '<div class="pending">⏳ আপনার Task Pending আছে। Admin যাচাই করার পর Reward যোগ হবে।</div>';
+
+
+    document.getElementById("submission").value = "";
+
+    showHistory();
+
+}
+
+
+function showHistory(){
+
+    const history =
+        document.getElementById("history");
+
+    if(historyList.length === 0){
+
+        history.innerHTML =
+            "কোনো task এখনো submit করা হয়নি।";
+
+        return;
+
+    }
+
+
+    history.innerHTML = "";
+
+    historyList.forEach(function(item){
+
+        const div = document.createElement("div");
+
+        div.className = "task";
+
+        div.innerHTML =
+
+            "<b>" + item.task + "</b>" +
+
+            "<br>💰 Reward: ৳" +
+            item.reward.toFixed(2) +
+
+            '<div class="pending">⏳ ' +
+            item.status +
+            "</div>";
+
+        history.appendChild(div);
+
+    });
+
+}
+
+
+function backToTasks(){
+
+    document.getElementById("submitPage")
+        .classList.add("hidden");
+
+    document.getElementById("taskPage")
+        .classList.remove("hidden");
+
+}
+
+
+</script>
+
+</body>
+</html>
