@@ -7,6 +7,7 @@
 <title>Email Service</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
@@ -128,6 +129,15 @@ textarea{
     font-weight:bold;
 }
 
+.rejected{
+    background:#f8d7da;
+    color:#721c24;
+    padding:12px;
+    border-radius:10px;
+    margin-top:12px;
+    font-weight:bold;
+}
+
 .balance{
     font-size:30px;
     font-weight:bold;
@@ -139,8 +149,16 @@ textarea{
     margin-top:15px;
 }
 
-</style>
+.error{
+    background:#f8d7da;
+    color:#721c24;
+    padding:12px;
+    border-radius:10px;
+    margin-top:12px;
+    word-break:break-word;
+}
 
+</style>
 </head>
 
 <body>
@@ -150,8 +168,6 @@ textarea{
 </div>
 
 <div class="container">
-
-<!-- TASK PAGE -->
 
 <div id="taskPage">
 
@@ -164,9 +180,6 @@ textarea{
 <div class="description">
 বৈধ ইমেইল-সংক্রান্ত কাজ সম্পন্ন করে রিওয়ার্ড অর্জন করুন।
 </div>
-
-
-<!-- TASK 1 -->
 
 <div class="task">
 
@@ -187,9 +200,6 @@ textarea{
 </button>
 
 </div>
-
-
-<!-- TASK 2 -->
 
 <div class="task">
 
@@ -217,7 +227,6 @@ textarea{
 
 </div>
 
-
 <div class="card">
 
 <div class="title">
@@ -232,8 +241,6 @@ textarea{
 
 </div>
 
-
-<!-- SUBMIT PAGE -->
 
 <div id="submitPage" class="hidden">
 
@@ -252,7 +259,7 @@ id="submission"
 placeholder="এখানে আপনার submission লিখুন..."
 ></textarea>
 
-<button onclick="submitTask()">
+<button id="submitButton" onclick="submitTask()">
 📤 Submit Task
 </button>
 
@@ -267,8 +274,6 @@ placeholder="এখানে আপনার submission লিখুন..."
 </div>
 
 
-<!-- HISTORY -->
-
 <div class="card">
 
 <div class="title">
@@ -276,7 +281,7 @@ placeholder="এখানে আপনার submission লিখুন..."
 </div>
 
 <div id="history">
-কোনো task এখনো submit করা হয়নি।
+লোড হচ্ছে...
 </div>
 
 </div>
@@ -286,21 +291,67 @@ placeholder="এখানে আপনার submission লিখুন..."
 
 <script>
 
+/* =========================
+   TELEGRAM
+========================= */
+
 const tg = window.Telegram.WebApp;
 
 tg.ready();
 tg.expand();
 
+
+/* =========================
+   SUPABASE
+========================= */
+
+const SUPABASE_URL =
+"https://cjfasocelwfvhhhghlma.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_qYBMOJNal_V5ykKY6mcMzg_Oa-ASX7z";
+
+const db =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let selectedTaskId = 0;
 let selectedTask = "";
 let selectedReward = 0;
 
-let historyList = [];
 
+/* =========================
+   TELEGRAM USER ID
+========================= */
+
+const telegramUser =
+tg.initDataUnsafe &&
+tg.initDataUnsafe.user
+    ? tg.initDataUnsafe.user
+    : null;
+
+const telegramId =
+telegramUser
+    ? String(telegramUser.id)
+    : null;
+
+
+/* =========================
+   OPEN TASK
+========================= */
 
 function openTask(task){
 
     if(task === 1){
 
+        selectedTaskId = 1;
         selectedTask = "📩 Email Verification Task";
         selectedReward = 2;
 
@@ -308,96 +359,244 @@ function openTask(task){
 
     if(task === 2){
 
+        selectedTaskId = 2;
         selectedTask = "📝 Email Feedback Task";
         selectedReward = 10;
 
     }
 
-    document.getElementById("taskPage").classList.add("hidden");
+    document.getElementById("taskPage")
+        .classList.add("hidden");
 
-    document.getElementById("submitPage").classList.remove("hidden");
+    document.getElementById("submitPage")
+        .classList.remove("hidden");
 
-    document.getElementById("selectedTask").innerText =
-        selectedTask;
+    document.getElementById("selectedTask")
+        .innerText = selectedTask;
 
-    document.getElementById("submission").value = "";
+    document.getElementById("submission")
+        .value = "";
 
-    document.getElementById("message").innerHTML = "";
+    document.getElementById("message")
+        .innerHTML = "";
 
 }
 
 
-function submitTask(){
+/* =========================
+   SUBMIT TASK
+========================= */
+
+async function submitTask(){
 
     const submission =
-        document.getElementById("submission").value.trim();
+        document.getElementById("submission")
+        .value
+        .trim();
+
+    const message =
+        document.getElementById("message");
+
+    const button =
+        document.getElementById("submitButton");
+
 
     if(submission === ""){
 
-        tg.showAlert("দয়া করে আপনার submission লিখুন।");
+        tg.showAlert(
+            "দয়া করে আপনার submission লিখুন।"
+        );
 
         return;
+    }
+
+
+    if(!telegramId){
+
+        message.innerHTML =
+        '<div class="error">' +
+        '❌ Telegram User ID পাওয়া যায়নি। ' +
+        'এই website-টি Telegram Bot-এর ভিতর থেকে খুলে আবার চেষ্টা করুন।' +
+        '</div>';
+
+        return;
+    }
+
+
+    button.disabled = true;
+    button.innerText = "⏳ Submitting...";
+
+
+    try{
+
+        const { data, error } =
+
+        await db
+        .from("submissions")
+        .insert({
+
+            telegram_id: telegramId,
+
+            task_id: selectedTaskId,
+
+            submission: submission,
+
+            status: "pending",
+
+            reward: selectedReward
+
+        })
+        .select();
+
+
+        if(error){
+
+            throw error;
+        }
+
+
+        message.innerHTML =
+        '<div class="pending">' +
+        '⏳ আপনার Task Pending আছে। Admin যাচাই করার পর Reward যোগ হবে।' +
+        '</div>';
+
+
+        document.getElementById("submission")
+            .value = "";
+
+
+        await loadHistory();
+
+
+    }catch(error){
+
+        console.error(error);
+
+        message.innerHTML =
+        '<div class="error">' +
+        '❌ Submission জমা হয়নি।<br><br>' +
+        '<b>Error:</b> ' +
+        escapeHtml(error.message) +
+        '</div>';
 
     }
 
 
-    const item = {
-
-        task:selectedTask,
-
-        reward:selectedReward,
-
-        status:"Pending"
-
-    };
-
-
-    historyList.push(item);
-
-    document.getElementById("message").innerHTML =
-        '<div class="pending">⏳ আপনার Task Pending আছে। Admin যাচাই করার পর Reward যোগ হবে।</div>';
-
-
-    document.getElementById("submission").value = "";
-
-    showHistory();
+    button.disabled = false;
+    button.innerText = "📤 Submit Task";
 
 }
 
 
-function showHistory(){
+/* =========================
+   LOAD HISTORY
+========================= */
+
+async function loadHistory(){
+
+    if(!telegramId){
+
+        document.getElementById("history")
+            .innerHTML =
+            '<div class="error">' +
+            'Telegram User ID পাওয়া যায়নি।' +
+            '</div>';
+
+        return;
+    }
+
+
+    const { data, error } =
+
+    await db
+    .from("submissions")
+    .select("*")
+    .eq("telegram_id", telegramId)
+    .order("created_at", {
+        ascending:false
+    });
+
+
+    if(error){
+
+        document.getElementById("history")
+            .innerHTML =
+            '<div class="error">' +
+            'History load error: ' +
+            escapeHtml(error.message) +
+            '</div>';
+
+        return;
+    }
+
 
     const history =
         document.getElementById("history");
 
-    if(historyList.length === 0){
+
+    if(!data || data.length === 0){
 
         history.innerHTML =
-            "কোনো task এখনো submit করা হয়নি।";
+        "কোনো task এখনো submit করা হয়নি।";
 
         return;
-
     }
 
 
     history.innerHTML = "";
 
-    historyList.forEach(function(item){
 
-        const div = document.createElement("div");
+    data.forEach(function(item){
+
+        const div =
+            document.createElement("div");
 
         div.className = "task";
 
+
+        let statusHtml = "";
+
+
+        if(item.status === "approved"){
+
+            statusHtml =
+            '<div class="success">' +
+            '✅ Approved — Reward: ৳' +
+            Number(item.reward).toFixed(2) +
+            '</div>';
+
+        }
+        else if(item.status === "rejected"){
+
+            statusHtml =
+            '<div class="rejected">' +
+            '❌ Rejected' +
+            '</div>';
+
+        }
+        else{
+
+            statusHtml =
+            '<div class="pending">' +
+            '⏳ Pending' +
+            '</div>';
+
+        }
+
+
         div.innerHTML =
 
-            "<b>" + item.task + "</b>" +
+            "<b>" +
+            escapeHtml(
+                getTaskName(item.task_id)
+            ) +
+            "</b>" +
 
             "<br>💰 Reward: ৳" +
-            item.reward.toFixed(2) +
+            Number(item.reward).toFixed(2) +
 
-            '<div class="pending">⏳ ' +
-            item.status +
-            "</div>";
+            statusHtml;
+
 
         history.appendChild(div);
 
@@ -405,6 +604,77 @@ function showHistory(){
 
 }
 
+
+/* =========================
+   TASK NAME
+========================= */
+
+function getTaskName(taskId){
+
+    if(Number(taskId) === 1){
+
+        return "📩 Email Verification Task";
+
+    }
+
+    if(Number(taskId) === 2){
+
+        return "📝 Email Feedback Task";
+
+    }
+
+    return "📝 Task";
+
+}
+
+
+/* =========================
+   LOAD BALANCE
+========================= */
+
+async function loadBalance(){
+
+    if(!telegramId){
+
+        return;
+    }
+
+
+    const { data, error } =
+
+    await db
+    .from("users")
+    .select("balance")
+    .eq("telegram_id", telegramId)
+    .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "Balance error:",
+            error
+        );
+
+        return;
+    }
+
+
+    if(data){
+
+        document.getElementById("balance")
+            .innerText =
+            Number(data.balance || 0)
+            .toFixed(2);
+
+    }
+
+}
+
+
+/* =========================
+   BACK
+========================= */
 
 function backToTasks(){
 
@@ -416,6 +686,29 @@ function backToTasks(){
 
 }
 
+
+/* =========================
+   HTML ESCAPE
+========================= */
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadHistory();
+loadBalance();
 
 </script>
 
