@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Make Money</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f7fb;color:#18202a;font-family:Arial,"Noto Sans Bengali",sans-serif}button,input,textarea,select{font:inherit}
+.top{padding:15px 18px;background:#fff;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}.brand{font-size:24px;font-weight:900}
+.profile{background:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px}.avatar{width:54px;height:54px;border-radius:50%;object-fit:cover;border:3px solid #a23cff}.welcome{color:#7c8794;font-weight:700}.name{font-size:18px;font-weight:900}.profile-btn{margin-left:auto;border:0;background:#f0e5ff;color:#7b28d7;padding:10px 14px;border-radius:22px;font-weight:900}
+.page{max-width:720px;margin:auto;padding:20px 17px 100px}.balance{background:linear-gradient(135deg,#4812b8,#902cff);color:#fff;border-radius:27px;padding:21px;box-shadow:0 14px 30px #7b27d633}.pillrow{display:flex;justify-content:space-between;gap:8px}.pill{background:#ffffff22;padding:8px 11px;border-radius:16px;font-weight:800;font-size:13px}.total{margin-top:16px}.amount{font-size:40px;font-weight:900;margin:3px 0 15px}.balancefoot{border-top:1px solid #ffffff33;padding-top:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}.withdraw,.primary{border:0;color:#fff;font-weight:900;border-radius:15px;padding:13px 16px}.withdraw{background:#10d18a}.primary{background:linear-gradient(90deg,#9d20f4,#5835ee);width:100%}
+.section-title{font-size:21px;font-weight:900;margin:25px 0 14px}.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.menu button{border:0;background:#e3dcff;color:#3d1b9d;border-radius:23px;padding:16px 5px;min-height:92px;font-weight:900}.menu span{display:block;font-size:27px;margin-bottom:5px}
+.card{background:#fff;border:1px solid #ececf2;border-radius:20px;padding:17px;margin:13px 0;box-shadow:0 4px 15px #0000000a}.reward{color:#078ab7;font-weight:900;margin:7px 0}.desc{color:#66717d;line-height:1.55}.notice{background:#f0f4f8;color:#65727e;border-radius:14px;padding:12px;margin:13px 0}.form label{display:block;font-weight:800;margin:12px 0 6px}.form input,.form textarea,.form select{width:100%;padding:13px;border:1px solid #dce2e8;border-radius:13px;background:#fafbfc}.form textarea{min-height:110px}.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{text-align:center;background:#fff;border:1px solid #eee;border-radius:16px;padding:12px}.stat b{display:block;font-size:23px}.bottom{position:fixed;z-index:30;bottom:0;left:0;right:0;height:76px;background:#fff;border-top:1px solid #e6e7eb;display:grid;grid-template-columns:repeat(5,1fr)}.bottom button{border:0;background:#fff;color:#9aa5b2;font-size:11px;font-weight:800}.bottom .active{color:#8a2cda}.bottom span{display:block;font-size:23px}.empty{text-align:center;color:#909aa5;padding:45px 15px}.tag{display:inline-block;padding:5px 10px;border-radius:20px;background:#f1f3f6;font-size:12px;font-weight:800}.adbox{background:#0d1930;color:#fff;border-radius:26px;padding:28px;text-align:center}.adreward{font-size:28px;font-weight:900;color:#00d89a}.small{font-size:12px;color:#8794a0}
+</style>
+</head>
+<body>
+<div class="top"><div class="brand">Make Money</div><div>⋮</div></div>
+<div class="profile"><img id="avatar" class="avatar" alt=""><div><div class="welcome">Welcome 👋</div><div id="userName" class="name">User</div></div><button class="profile-btn" onclick="show('profile')">👤 My Profile</button></div>
+<main id="app" class="page"></main>
+<nav class="bottom">
+<button id="nav-microjob" onclick="show('microjob')"><span>💼</span>Microjob</button>
+<button id="nav-ranking" onclick="show('ranking')"><span>🏆</span>Ranking</button>
+<button id="nav-home" class="active" onclick="show('home')"><span>🏠</span>Home</button>
+<button id="nav-profile" onclick="show('profile')"><span>🪪</span>Profile</button>
+<button onclick="openTelegram()"><span>✈️</span>Telegram</button>
+</nav>
+<script>
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const tg=window.Telegram?.WebApp;if(tg){tg.ready();tg.expand();}
+const tgInit=tg?.initData||"";
+let state={profile:null,tasks:[],subs:[],settings:{},ref:new URLSearchParams(location.search).get("ref")};
+
+const money=v=>"৳"+Number(v||0).toFixed(2);
+const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+async function boot(){
+  if(!tgInit){document.getElementById("app").innerHTML='<div class="card"><h2>Telegram App</h2><p>এই অ্যাপটি Telegram Mini App হিসেবে খুলুন।</p></div>';return;}
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){const r=await db.auth.signInAnonymously();if(r.error){document.getElementById("app").innerHTML='<div class="card"><b>Supabase Anonymous Auth চালু করুন।</b><p class="desc">'+esc(r.error.message)+'</p></div>';return;}}
+  const s=(await db.auth.getSession()).data.session;
+  const r=await fetch(SUPABASE_URL+"/functions/v1/telegram-auth",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+s.access_token,"apikey":SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({initData:tgInit,ref:state.ref})});
+  const j=await r.json();if(!r.ok){document.getElementById("app").innerHTML='<div class="card"><b>Telegram verification failed</b><p class="desc">'+esc(j.error||"Unknown error")+'</p></div>';return;}
+  state.profile=j.profile;
+  document.getElementById("userName").textContent=state.profile.first_name||"User";
+  document.getElementById("avatar").src=state.profile.avatar_url||"";
+  await Promise.all([loadTasks(),loadSubs(),loadSettings()]);show("home");
+}
+async function loadTasks(){const r=await db.from("tasks").select("*").eq("active",true).order("sort_order",{ascending:true});state.tasks=r.data||[]}
+async function loadSubs(){const r=await db.from("task_submissions").select("*,tasks(title,reward)").eq("user_id",state.profile.id).order("created_at",{ascending:false});state.subs=r.data||[]}
+async function loadSettings(){const r=await db.from("settings").select("*");(r.data||[]).forEach(x=>state.settings[x.key]=x.value??x.text_value)}
+function nav(x){document.querySelectorAll(".bottom button").forEach(b=>b.classList.remove("active"));const e=document.getElementById("nav-"+x);if(e)e.classList.add("active")}
+function show(p){nav(p==="home"?"home":p==="microjob"?"microjob":p==="ranking"?"ranking":"profile");const a=document.getElementById("app");if(p==="home")a.innerHTML=home();if(p==="microjob")a.innerHTML=microjob();if(p==="ranking")a.innerHTML=ranking();if(p==="profile")a.innerHTML=profile();if(p==="gmail")gmail();if(p==="ads")ads();if(p==="ref")referral();if(p==="withdraw")withdrawPage();if(p==="history")historyPage()}
+function home(){return `<section class="balance"><div class="pillrow"><span class="pill">💳 মেইন ওয়ালেট</span><span class="pill">ID: ${esc(state.profile.telegram_id)}</span></div><div class="total">🪙 মোট ব্যালেন্স</div><div class="amount">${money(state.profile.balance)}</div><div class="balancefoot"><span>${esc(state.profile.first_name||"User")}</span><button class="withdraw" onclick="show('withdraw')">💸 Withdraw</button></div></section><h2 class="section-title">🧱 প্রয়োজনীয় মেনু</h2><div class="menu"><button onclick="show('gmail')"><span>✉️</span>Gmail</button><button onclick="show('ads')"><span>▣</span>Ads Watch</button><button onclick="show('microjob')"><span>📋</span>New Task</button><button onclick="show('history')"><span>🕘</span>History</button><button onclick="show('ref')"><span>👥</span>Referral</button><button onclick="support()"><span>🎧</span>Support</button></div><div class="card"><h3>🎁 Referral Program</h3><p>যোগ্য referral থেকে কমিশন পাবেন।</p><button class="primary" onclick="show('ref')">Referral Link</button></div>`}
+function microjob(){return `<div class="notice">🔥 নতুন টাস্কগুলো এখানে দেখাবে। Admin যেকোনো সময় নতুন task যোগ করতে পারবেন।</div><h2 class="section-title">জনপ্রিয় টাস্কসমূহ 🟢</h2>${state.tasks.length?state.tasks.map(t=>`<div class="card"><b>${esc(t.title)}</b><div class="reward">💰 ${money(t.reward)}</div><div class="desc">${esc(t.description)}</div><button class="primary" onclick="openTask('${t.id}')">▶️ কাজ শুরু করুন</button></div>`).join(""):'<div class="card empty">📋<br><b>বর্তমানে কোনো টাস্ক নেই</b></div>'}`}
+function openTask(id){const t=state.tasks.find(x=>x.id===id);if(!t)return;document.getElementById("app").innerHTML=`<div class="card"><h2>${esc(t.title)}</h2><div class="reward">💰 ${money(t.reward)}</div><p class="desc">${esc(t.description)}</p><div class="notice">${esc(t.proof_instruction||"কাজের প্রমাণ দিন।")}</div><div class="form"><label>প্রমাণ</label><textarea id="proof" placeholder="Proof / report"></textarea><button class="primary" onclick="submitTask('${t.id}')">📤 Submit</button></div></div>`}
+async function submitTask(id){const proof=document.getElementById("proof").value.trim();if(!proof)return alert("প্রমাণ দিন।");const t=state.tasks.find(x=>x.id===id);const r=await db.from("task_submissions").insert({task_id:id,user_id:state.profile.id,proof_text:proof,status:"pending",reward_snapshot:t.reward});if(r.error)return alert(r.error.message);alert("Submission পাঠানো হয়েছে। Admin approve করলে reward যোগ হবে।");await loadSubs();show("microjob")}
+function historyPage(){document.getElementById("app").innerHTML=`<h2 class="section-title">কাজের হিস্টরি</h2><div class="statrow"><div class="stat">মোট<b>${state.subs.length}</b></div><div class="stat">Approved<b>${state.subs.filter(x=>x.status==="approved").length}</b></div><div class="stat">Pending<b>${state.subs.filter(x=>x.status==="pending").length}</b></div></div>${state.subs.map(s=>`<div class="card"><b>${esc(s.tasks?.title||"Task")}</b><p>${new Date(s.created_at).toLocaleString("bn-BD")}</p><span class="tag">${esc(s.status)}</span><strong style="float:right">${money(s.reward_snapshot)}</strong></div>`).join("")||'<div class="empty">কোনো history নেই।</div>'}`}
+function gmail(){const reward=state.settings.gmail_task_reward??15;document.getElementById("app").innerHTML=`<h2 class="section-title">✉️ Gmail</h2><div class="card"><h2>Gmail Verification</h2><div class="reward">Rate: ${money(reward)}</div><p class="desc">নিজের Gmail-এর মালিকানা/verification সম্পর্কিত বৈধ task সম্পন্ন করুন।</p><div class="notice">🔒 Gmail password বা অন্য কোনো account credential এখানে জমা দেবেন না।</div><button class="primary" onclick="show('microjob')">Gmail Task দেখুন</button></div>`}
+function ads(){const r=state.settings.ad_reward??0.10,l=state.settings.daily_ad_limit??100;document.getElementById("app").innerHTML=`<h2 class="section-title">▣ Ads Watch</h2><div class="adbox"><div style="font-size:50px">📺</div><h2>বিজ্ঞাপন দেখে আয় করুন</h2><div class="adreward">${money(r)}</div><p>প্রতি verified ad</p><p>আজকের limit: ${l}</p><button class="primary" onclick="alert('Rewarded ad provider এখনো যুক্ত করা হয়নি। Verified provider callback ছাড়া balance credit করা হবে না।')">▶️ Start Ad</button></div>`}
+function referral(){const code=state.profile.referral_code;const link="https://t.me/your_bot?startapp=ref_"+code;document.getElementById("app").innerHTML=`<h2 class="section-title">👥 Referral</h2><div class="card"><h3>আপনার Referral Link</h3><input value="${esc(link)}" readonly style="width:100%;padding:12px;border:1px solid #ddd;border-radius:12px"><p>প্রথম qualifying task সম্পন্ন হলে কমিশন প্রযোজ্য হবে।</p><button class="primary" onclick="navigator.clipboard?.writeText('${esc(link)}');alert('Link copied')">Copy Link</button></div>`}
+function withdrawPage(){const min=state.settings.minimum_withdraw??250;document.getElementById("app").innerHTML=`<h2 class="section-title">💸 Withdraw</h2><div class="card"><p>Minimum: <b>${money(min)}</b></p><div class="form"><label>Amount</label><input id="wa" type="number" min="${min}" step="0.01"><label>Payment Method</label><select id="wm"><option>bKash</option><option>Nagad</option><option>Rocket</option></select><label>Payment Number</label><input id="wn" inputmode="numeric" placeholder="01XXXXXXXXX"><button class="primary" onclick="requestWithdraw()">Request Withdraw</button></div></div>`}
+async function requestWithdraw(){const amount=Number(wa.value),min=Number(state.settings.minimum_withdraw??250);if(amount<min)return alert("Minimum withdrawal "+money(min));if(amount>Number(state.profile.balance))return alert("Insufficient balance");const r=await db.from("withdrawals").insert({user_id:state.profile.id,amount,payment_method:wm.value,payment_number:wn.value.trim(),status:"pending"});if(r.error)return alert(r.error.message);alert("Withdrawal request পাঠানো হয়েছে।");}
+function ranking(){document.getElementById("app").innerHTML='<h2 class="section-title">🏆 Ranking</h2><div class="card empty">Ranking module পরে চালু করা যাবে।</div>'}
+function profile(){document.getElementById("app").innerHTML=`<h2 class="section-title">🪪 My Profile</h2><div class="card"><b>${esc(state.profile.first_name||"User")}</b><p>Telegram ID: ${esc(state.profile.telegram_id)}</p><p>Balance: ${money(state.profile.balance)}</p></div>`}
+function support(){alert("Support: আপনার Telegram support username এখানে বসাতে হবে।")}
+function openTelegram(){if(tg?.openTelegramLink)tg.openTelegramLink("https://t.me/")}
+boot();
+</script>
+</body></html>
